@@ -1,20 +1,28 @@
 function distanceAndAngleToClosestPoint = RangeAngleCoordinates()
-scansub = rossubscriber('/scan');
-linescan = receive(scansub); %Receive message
+    scansub = rossubscriber('/scan');
+    linescan = receive(scansub); %Receive message
 
-scan = linescan;
+    scan = linescan;
 
-% get data from scan
-cart = readCartesian(scan);
-if(isempty(cart))
-    distanceAndAngleToClosestPoint = [];
-else
-    closestPoint = cart(1,:);
-    for i = 2 : size(cart)
-        if(closestPoint(1,1) > cart(i,1))
-            closestPoint = cart(i,:);
+    ranges = linescan.Ranges; % Extract scan
+    angles = linescan.AngleMin:linescan.AngleIncrement:linescan.AngleMax;
+    angles = angles';
+    
+    meas = [ranges, angles];
+    % get data from scan
+    if(isempty(scan))
+        distanceAndAngleToClosestPoint = [];
+    else
+        for i = 1 : size(meas)
+            if(meas(i,1)
         end
+        closestPoint = meas(1,:);
+        for i = 2 : size(meas)
+            if(closestPoint(1,1) > meas(i,1))
+                closestPoint = meas(i,:);
+            end
+        end
+        closestPoint(1,2) = rad2deg(closestPoint(1,2));
+        distanceAndAngleToClosestPoint = closestPoint;
     end
-    distanceAndAngleToClosestPoint = closestPoint;
-end
 end
