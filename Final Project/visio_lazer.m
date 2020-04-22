@@ -1,7 +1,7 @@
 rosshutdown
-setenv('ROS_MASTER_URI','http://192.168.1.65:11311')
-setenv('ROS_IP','192.168.1.56')
-rosinit('http://192.168.1.193:11311','NodeHost','192.168.1.56');
+setenv('ROS_MASTER_URI','http://192.168.7.41:11311')
+setenv('ROS_IP','192.168.7.25')
+rosinit('http://192.168.7.41:11311','NodeHost','192.168.7.25');
 
 robot = rospublisher('/mobile_base/commands/velocity') ;
 %%
