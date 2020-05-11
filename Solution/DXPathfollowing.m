@@ -1,4 +1,4 @@
-function [reachedDestination] = DXPathfollowing(start, stop, robotWidth, resolution)
+function [estimatedPosition] = DXPathfollowing(start, stop, robotWidth, resolution)
 % Substriptions
 laserSub = rossubscriber('/scan');
 odomSub = rossubscriber('/odom');
@@ -103,5 +103,6 @@ while(distanceToDestination >= goalRadius)
             
     distanceToDestination = norm(estimatedPosition(1:2) - endPosition/resolution);  
 end
-reachedDestination = 1;
 disp("Destination Reached")
+
+

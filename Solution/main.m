@@ -20,7 +20,7 @@ laserSub = rossubscriber('/scan');
 odomSub = rossubscriber('/odom');
 
 % Publishers
-[velocityPub,velocityMsg] = rospublisher('/mobile_base/commands/velocity');
+[velPub,velMsg] = rospublisher('/mobile_base/commands/velocity');
 turtlebot = rospublisher('/mobile_base/commands/velocity');
 
 % Destinations
@@ -35,7 +35,32 @@ pixelResolution = 1418/61.5;
 robotWidth = 0.8; %meters
 
 %% From initial position to destinationB
-reachedGoal = DXPathfollowing(initialPositionA, destinationB, robotWidth, pixelResolution);
+estimatedPosition = DXPathfollowing(initialPositionA, destinationB, robotWidth, pixelResolution);
 
+% Destination Reached find green circle
+findGreenCircle(cameraSub, laserSub, velMsg, velPub);
 
+%% Wait
+ tic;
+ while toc < 2
+ end
+ 
+ tic;
+ while toc < 3
+    velMsg.Linear.X = 0; 
+    velMsg.Angular.Z = 1;
+    send(robot, velMsg);
+ end
+ 
+ tic;
+ while toc < 2
+    velMsg.Linear.X = 0.6; 
+    velMsg.Angular.Z = 0;
+    send(robot, velMsg);
+ end
 
+%% From destinationB to destinationC
+reachedGoal = DXPathfollowing(round(estimatedPosition(1:2)*pixelResolution), destinationC, robotWidth, pixelResolution);
+
+% Destination Reached find green circle
+findGreenCircle(cameraSub, laserSub, velMsg, velPub);
