@@ -40,7 +40,7 @@ resetOdometry = rospublisher('/mobile_base/commands/reset_odometry');
 imSub = rossubscriber('/camera/rgb/image_raw');
 laserSub = rossubscriber('/scan');
 
-[velPub,velMsg] = rospublisher('/mobile_base/commands/velocity','geometry_msgs/Twist');
+[velocityPublisher, velocityMessage] = rospublisher('/mobile_base/commands/velocity','geometry_msgs/Twist');
 
 % Map creation
 map_color = imread('ShannonMap.png');
@@ -165,33 +165,37 @@ while(distanceToGoal > goalRadius)
     % sensor readings.
     [isUpdated, estimatedPose, estimatedCovariance] = amcl(pose, scan);
 	
-    obstacleFound = checkForObstacles(scan, minObstacleDistance, maxObstacleDistance, angleLimitsInterval);
-    if(obstacleFound)
-        [steerDir, numberOfIterations] = avoidObstacle(vfh, ...
-            estimatedPose(3), 10, laserSub, velPub, velMsg,...
-            odomSub, initialPositionA, amcl,i, visualizationHelper);
-        monteCarloCounter = monteCarloCounter + 1;
-    else
-        %Starts a new montocarlo
-		%amcl = monteCarloInit(mapNoDilation);
-		monteCarloCounter = 0;
-    end
+%     obstacleFound = checkForObstacles(scan, minObstacleDistance, maxObstacleDistance, angleLimitsInterval);
+%     if(obstacleFound)
+%         [steerDir, numberOfIterations] = avoidObstacle(vfh, ...
+%             estimatedPose(3), 10, laserSub, velocityPublisher, velocityMessage,...
+%             odomSub, initialPositionA, amcl,i, visualizationHelper);
+%         monteCarloCounter = monteCarloCounter + 1;
+%     else
+%         %Starts a new montocarlo
+% 		amcl = monteCarloInit(mapNoDilation);
+% 		monteCarloCounter = 0;
+%     end
 
 	% Scanning and avoiding objects
-	%objectAvoided = avoidObject(laserSub,odomSub,velPub,scan);
+	objectAvoided = avoidObject(laserSub,odomSub,velocityPublisher,scan);
 
-   % if(~objectAvoided)
-	%	monteCarloCounter = monteCarloCounter + 1;
-%	else
+    if(~objectAvoided)
+		monteCarloCounter = monteCarloCounter + 1;
+	else
+		%Starts a new montocarlo
+        amcl = monteCarloInit(mapNoDilation);
+		monteCarloCounter = 0;
+    end
 
  %   end
     % Calculation distance to goal
     %distanceToGoal1 = norm([pose.Position.X;pose.Position.Y]-B);
     % Asking controller 1 for linear velocity and angular velocity
-    [vel,ang_vel] = controller([estimatedPose(1), estimatedPose(2), estimatedPose(3)]);
+    [velocity, angularVelocity] = controller([estimatedPose(1), estimatedPose(2), estimatedPose(3)]);
     % Tells the robot to move
     %disp(angles)
-    move(vel,ang_vel,velPub);
+    drive(velocity,angularVelocity,velocityPublisher);
     
     %disp (pose(1))
     %pause(1)
@@ -206,17 +210,17 @@ while(distanceToGoal > goalRadius)
 end
 disp("Destination B reached")
 % Find first green circle
-spinToLocateGreenCircle(12, imSub, odomSub, velPub);
+spinToLocateGreenCircle(12, imSub, odomSub, velocityPublisher);
 
-allignGreenCircle(12, 3, imSub, odomSub, velPub);
+allignGreenCircle(12, 3, imSub, odomSub, velocityPublisher);
 
-aoa = driveTowardsGreenCircle(laserSub, velPub, odomSub);
+aoa = driveTowardsGreenCircle(laserSub, velocityPublisher, odomSub);
 
-allignGreenCircle(4, 1, imSub, odomSub, velPub);
+allignGreenCircle(4, 1, imSub, odomSub, velocityPublisher);
 
-allignToWall(laserSub, odomSub, velPub);
+allignToWall(laserSub, odomSub, velocityPublisher);
 
-rotateDegree2(180,1,false,odomSub,velPub)
+rotateDegree2(180,1,false,odomSub,velocityPublisher)
 disp("Circel reached")
 
 % From B to C
@@ -248,7 +252,7 @@ while(distanceToGoal > goalRadius)
     [isUpdated,estimatedPose, estimatedCovariance] = amcl(pose, scan);
 	
 	% Scanning and avoiding objects
-	objectAvoided = avoidObject(laserSub,odomSub,velPub,scan);
+	objectAvoided = avoidObject(laserSub,odomSub,velocityPublisher,scan);
 
     if(~objectAvoided)
 		monteCarloCounter = monteCarloCounter + 1;
@@ -260,10 +264,10 @@ while(distanceToGoal > goalRadius)
     % Calculation distance to goal
     %distanceToGoal1 = norm([pose.Position.X;pose.Position.Y]-B);
     % Asking controller 1 for linear velocity and angular velocity
-    [vel,ang_vel] = controller([estimatedPose(1), estimatedPose(2), estimatedPose(3)]);
+    [velocity,angularVelocity] = controller([estimatedPose(1), estimatedPose(2), estimatedPose(3)]);
     % Tells the robot to move
     %disp(angles)
-    move(vel,ang_vel,velPub);
+    move(velocity,angularVelocity,velocityPublisher);
 
     %disp (pose(1))
     %pause(1)
@@ -278,22 +282,22 @@ while(distanceToGoal > goalRadius)
 end
 disp("Destination C reached")
 % Find first green circle
-spinToLocateGreenCircle(12, imSub, odomSub, velPub);
+spinToLocateGreenCircle(12, imSub, odomSub, velocityPublisher);
 
-allignGreenCircle(12, 3, imSub, odomSub, velPub);
+allignGreenCircle(12, 3, imSub, odomSub, velocityPublisher);
 
-aoa = driveTowardsGreenCircle(laserSub, velPub, odomSub);
+aoa = driveTowardsGreenCircle(laserSub, velocityPublisher, odomSub);
 
-allignGreenCircle(4, 1, imSub, odomSub, velPub);
+allignGreenCircle(4, 1, imSub, odomSub, velocityPublisher);
 
-allignToWall(laserSub, odomSub, velPub);
+allignToWall(laserSub, odomSub, velocityPublisher);
 
 disp("Circel reached")
 
 %% % MOved it to a function
 
 while(1)
-	move(0.2,0,velPub);
+	move(0.2,0,velocityPublisher);
 	scanMsg = receive(laserSub); scan = lidarScan(scanMsg);
-	objectAvoided = avoidObject(laserSub,odomSub,velPub,scan);
+	objectAvoided = avoidObject(laserSub,odomSub,velocityPublisher,scan);
 end
