@@ -32,15 +32,10 @@ scan = lidarScan(scanMsg);
 robot = rospublisher('/mobile_base/commands/velocity');
 velmsg = rosmessage(robot);
 
-% Positions
+% Destinations
 initialPositionA = [1050, 570];
 destinationB = [80, 200];
-destinationC = [1190, 1337];
-
-% Destinations
-% initialPositionA = [1105 567];
-% destinationB = [100 200];
-% destinationC = [22.5, 2];
+destinationC = [600, 50];
 
 % Map Definitions
 pixelToMeterRatio = 1418/53.5;
