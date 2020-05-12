@@ -1,8 +1,9 @@
-function [isObstacle] = checkForObstacle(lidarScan, minRange, maxRange, angleInterval)
-    scan = removeInvalidData(lidarScan, 'RangeLimits', [minRange, maxRange], 'AngleLimits', [-angleInterval, angleInterval]); 
-    if (scan.Count == 0) 
-        isObstacle = 0;
+function [obstacleInFront] = checkForObstacle(lidarScan, lowerRangeLimit, upperRangeLimit, angleThreshold)
+    % Inspiration from https://se.mathworks.com/help/robotics/ref/removeinvaliddata.html
+    validScan = removeInvalidData(lidarScan, 'RangeLimits', [lowerRangeLimit, upperRangeLimit], 'AngleLimits', [-angleThreshold, angleThreshold]); 
+    if (validScan.Count == 0) 
+        obstacleInFront = false;
     else 
-        isObstacle = 1;
+        obstacleInFront = true;
     end
-end 
+end
