@@ -64,10 +64,10 @@ vfh.UseLidarScan = true;
 vfh.DistanceLimits = [0.05 1];
 vfh.RobotRadius = robotWidth/2;
 vfh.MinTurningRadius = 0.2;
-vfh.PreviousDirectionWeight = 4;
-vfh.CurrentDirectionWeight = 2;
+vfh.PreviousDirectionWeight = 2;
+vfh.CurrentDirectionWeight = 4;
 vfh.TargetDirectionWeight = 7;
-vfh.SafetyDistance = 0.2;
+vfh.SafetyDistance = 0.5;
 
 minRangeObstacleDetect = 0;
 maxRangeObstacleDetect = 0.6;

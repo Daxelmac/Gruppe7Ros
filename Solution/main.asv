@@ -23,32 +23,32 @@ odomSub = rossubscriber('/odom');
 [velPub,velMsg] = rospublisher('/mobile_base/commands/velocity');
 turtlebot = rospublisher('/mobile_base/commands/velocity');
 
-% Map Definitions
-pixelResolution = 1418/61.5;
-
 % Destinations
 initialPositionA = [1058 575];
 destinationB = [110 230];
 destinationC = [600 50];
-initialPositionAMeters = initialPositionA/pixelResolution;
+
+% Map Definitions
+pixelResolution = 1418/61.5;
 
 % Robot definitions
 robotWidth = 0.8; %meters
 maxAngularVelocity = 1;
 
 %% From initial position to destinationB
-DXPathfollowing(initialPositionA, destinationB, robotWidth, pixelResolution);
+estimatedPosition = DXPathfollowing(initialPositionA, destinationB, robotWidth, pixelResolution);
 
 % Destination Reached find green circle
 findGreenCircle(cameraSub, laserSub, velMsg, velPub, robotWidth);
 
+estimated
+
 disp('First green circle found')
 
-%% Find where I am
-estimatedPosition = getPosition(odumSub, initialPositionAMeters); 
+%% Wait
 
 %% From destinationB to destinationC
-DXPathfollowing(round(estimatedPosition(1:2)*pixelResolution), destinationC, robotWidth, pixelResolution);
+estimatedPosition = DXPathfollowing(round(estimatedPosition(1:2)*pixelResolution), destinationC, robotWidth, pixelResolution);
 
 % Destination Reached find green circle
 findGreenCircle(cameraSub, laserSub, velMsg, velPub, robotWidth);
