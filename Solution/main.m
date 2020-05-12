@@ -45,7 +45,7 @@ findGreenCircle(cameraSub, laserSub, velMsg, velPub, robotWidth);
 disp('First green circle found')
 
 %% Find where I am
-estimatedPosition = getPosition(odumSub, initialPositionAMeters); 
+estimatedPosition = getPosition(odomSub, initialPositionAMeters); 
 
 %% From destinationB to destinationC
 DXPathfollowing(round(estimatedPosition(1:2)*pixelResolution), destinationC, robotWidth, pixelResolution);

@@ -1,4 +1,4 @@
-function [] = findGreenCircle(cameraSub, laserSub, velMsg, velPub)
+function [] = findGreenCircle(cameraSub, laserSub, velMsg, velPub, robotWidth)
     driveAround = true;
     while driveAround
         velMsg.Linear.X = 0;
@@ -11,7 +11,7 @@ function [] = findGreenCircle(cameraSub, laserSub, velMsg, velPub)
         if ~isempty(imageProps)
             for i = 1 : size(imageProps, 1)
                 [greenCircleDetected, coordinate] = detectGreenCircle(imageProps);
-                [closeEnough, distance] = findDistance(scan);
+                [closeEnough, distance] = findDistance(scan, robotWidth);
                 if (greenCircleDetected || distance < 0.8)
                     if(coordinate < 320)
                         velMsg.Angular.Z = 0.2;
