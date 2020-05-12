@@ -29,7 +29,7 @@ pixelResolution = 1418/61.5;
 % Destinations
 initialPositionA = [1058 575];
 destinationB = [110 230];
-destinationC = [600 50];
+destinationC = [600 75];
 initialPositionAMeters = initialPositionA/pixelResolution;
 
 % Robot definitions
@@ -37,18 +37,15 @@ robotWidth = 0.8; %meters
 maxAngularVelocity = 1;
 
 %% From initial position to destinationB
-DXPathfollowing(initialPositionA, destinationB, robotWidth, pixelResolution);
+estimatedPosition = DXPathfollowing(initialPositionA, destinationB, robotWidth, pixelResolution);
 
 % Destination Reached find green circle
 findGreenCircle(cameraSub, laserSub, velMsg, velPub, robotWidth);
 
 disp('First green circle found')
 
-%% Find where I am
-estimatedPosition = getPosition(odomSub, initialPositionAMeters); 
-
 %% From destinationB to destinationC
-DXPathfollowing(round(estimatedPosition(1:2)*pixelResolution), destinationC, robotWidth, pixelResolution);
+DXPathfollowing(destinationB, destinationC, robotWidth, pixelResolution);
 
 % Destination Reached find green circle
 findGreenCircle(cameraSub, laserSub, velMsg, velPub, robotWidth);

@@ -33,10 +33,10 @@ imageBinaryFlipped = flipud(imageBinary);
 se = ones(round(((robotWidth / 2) + margin) * pixelResolution));
 
 imageBinaryDilatedFlipped = imdilate(imageBinaryFlipped,se);
-figure(), imshow(imageBinaryDilatedFlipped);
+%figure(), imshow(imageBinaryDilatedFlipped);
 
 map = robotics.BinaryOccupancyGrid(imageBinary, pixelResolution);
-figure(), show(map)
+%figure(), show(map)
 
 %% Find Path
 dx = DXform(imageBinaryDilatedFlipped);
