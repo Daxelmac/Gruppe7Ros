@@ -50,10 +50,10 @@ function [amclToReturn, visualizationHelper] = DXPathfollowing(laserSub, odomSub
     vfh.DistanceLimits = [0.05 1];
     vfh.RobotRadius = robotWidth/2;
     vfh.MinTurningRadius = 0.2;
+    vfh.SafetyDistance = 0.5;
     vfh.PreviousDirectionWeight = 2; % Value found with trial and error
     vfh.CurrentDirectionWeight = 4; % Value found with trial and error
     vfh.TargetDirectionWeight = 7; % Value found with trial and error
-    vfh.SafetyDistance = 0.5;
 
     lowerRangeLimit = 0;
     upperRangeLimit = 1; % Value found with trial and error
