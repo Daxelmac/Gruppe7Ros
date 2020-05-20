@@ -30,7 +30,7 @@ function [amclToReturn, visualizationHelper] = DXPathfollowing(laserSub, odomSub
     map = robotics.BinaryOccupancyGrid(imageBinary, pixelResolution);
     %figure(), show(map)
 
-    %% Find best path using D-star
+    %% Find best path using D-star - Inspiration from Week 5 examples
     dx = DXform(imageBinaryDilatedFlipped);
     dx.plan(endPosition);
     path = dx.query(startPosition);
